@@ -22,7 +22,7 @@ class jsondict(dict):
         self.update(jsondict(other))
 
     def __repr__(self):
-        return "'%s'" % json.dumps(self)
+        return f"'{json.dumps(self)}'"
 
 def parse_opts(s):
     return dict(s.split('='))
@@ -51,17 +51,17 @@ def main():
     spec = args.__dict__
 
     log.startLogging(args.logfile)
- 
+
     ## fuzzing server
     fuzzer = FuzzingServerFactory(spec)
     listenWS(fuzzer, interface=args.listen_interface)
- 
+
     ## web server
     webdir = File(args.webdir)
     web = Site(webdir)
     reactor.listenTCP(args.webport, web, interface=args.listen_interface)
- 
-    log.msg("Using Twisted reactor class %s" % str(reactor.__class__))
+
+    log.msg(f"Using Twisted reactor class {str(reactor.__class__)}")
 
     if args.exit_timeout:
         def exit_callback():
@@ -71,5 +71,5 @@ def main():
             sys.exit(12)
 
         reactor.callLater(args.exit_timeout, exit_callback)
-    
+
     reactor.run()
